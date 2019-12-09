@@ -1,0 +1,25 @@
+spring:
+
+feign:
+  client:
+    config:
+      default:
+        requestInterceptors: com.mic.news_service.client.interceptor.AuthorizationRequestInterceptor
+logging:
+  config: classpath:log4j2.xml
+  level:
+    org:
+      springframework:
+        web: INFO
+      hibernate: ERROR
+    com:
+      mic: DEBUG
+cloud:
+  aws:
+    stack:
+      auto: false
+    region:
+      static: eu-central-1
+amazonProperties:
+  region: eu-central-1
+  tableName: News

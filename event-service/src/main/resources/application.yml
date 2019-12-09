@@ -1,0 +1,5 @@
+amazonProperties:
+  region: eu-central-1
+  accessKey: AKIAW5L7GFKHN4CX3AU4
+  secretKey: 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
+  bucketName: event-backet
