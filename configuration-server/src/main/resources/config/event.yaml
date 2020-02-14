@@ -1,10 +1,7 @@
 spring:
-#  devtools:
-#    livereload:
-#      port: 35730
   datasource:
     driverClassName: org.postgresql.Driver
-    url: "jdbc:postgresql://192.168.99.100:6553/facebook"
+    url: "jdbc:postgresql://localhost:6553/facebook"
     username: "postgres"
     dbcp2:
       test-on-borrow: true

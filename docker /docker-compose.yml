@@ -1,0 +1,138 @@
+version: '3'
+
+services:
+  eureka-server:
+    build: ../eureka-server
+    container_name: eureka-server
+    image: eureka-server:latest
+    ports:
+      - 8761:8761
+    networks:
+      - emp-network
+
+  configuration-server:
+    build: ../configuration-server
+    container_name: configuration-server
+    image: configuration-server:latest
+    volumes:
+      - facebook:/var/lib/facebook
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+    ports:
+      - 9999:9999
+    restart: on-failure
+    links:
+      - eureka-server:eureka-server
+    depends_on:
+      - eureka-server
+    networks:
+      - emp-network
+
+  auth-service:
+    build: ../auth
+    container_name: auth-service
+    image: auth-service:latest
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_CLOUD_CONFIG_URI: http://configuration-server:9999
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+    ports:
+      - 5000:5000
+    restart: on-failure
+    links:
+      - eureka-server:eureka-server
+      - configuration-server:configuration-server
+      - auth-db:auth-db
+    depends_on:
+      - eureka-server
+      - configuration-server
+      - auth-db
+    networks:
+      - emp-network
+    logging:
+      driver: json-file
+
+
+  auth-db:
+    image: postgres
+    container_name: auth-db
+    restart: on-failure
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=facebook
+    ports:
+      - 5432:5432
+    volumes:
+      - facebook:/var/lib/auth-db
+    networks:
+      - emp-network
+
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    restart: on-failure
+    volumes:
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+      - ./rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - emp-network
+
+
+  mail-service:
+    build: ../mail-service
+    container_name: mail-service
+    image: mail-service:latest
+    restart: on-failure
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_CLOUD_CONFIG_URI: http://configuration-server:9999
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+    ports:
+      - 5002:5002
+    links:
+      - eureka-server:eureka-server
+      - configuration-server:configuration-server
+      - rabbitmq:rabbitmq
+    depends_on:
+      - eureka-server
+      - configuration-server
+      - rabbitmq
+    networks:
+      - emp-network
+    logging:
+      driver: json-file
+
+
+  zuul-server:
+    build: ../zuul
+    container_name: zuul-server
+    image: zuul-server:latest
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://configuration-server:9999
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+    ports:
+      - 8080:8080
+    links:
+      - eureka-server:eureka-server
+      - configuration-server:configuration-server
+    depends_on:
+      - eureka-server
+      - configuration-server
+    networks:
+      - emp-network
+    logging:
+      driver: json-file
+
+
+networks:
+  emp-network:
+    driver: bridge
+
+volumes:
+  facebook:
+    external: true
