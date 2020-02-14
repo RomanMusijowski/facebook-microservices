@@ -3,7 +3,7 @@ Backend REST API for Facebook app created with [Spring Boot](http://projects.spr
 Service [Architecture](ARCHITECTURE.MD)  
 You can find addional information in the [Wiki](WIKI.md)  
 For running that project you you need:
- - java 13, 
+ - java 13
  - maven 3.6 or higher
 
 ###Docker-compose
