@@ -2,6 +2,33 @@
 Backend REST API for Facebook app created with [Spring Boot](http://projects.spring.io/spring-boot/).  
 Service [Architecture](ARCHITECTURE.MD)  
 You can find addional information in the [Wiki](WIKI.md)  
+For running that project you you need:
+ - java 13, 
+ - maven 3.6 or higher
+
+###Docker-compose
+You can run program with Docker-compose. During that program will create containers for next services:
+- eureka-service
+- configuration-service
+- auth-service
+- mail-service
+- zuul-service
+- auth-db
+- rabbitmq
+
+
+
+If you wanna run this program in docker, run next command in root project directory:
+
+- mvn clean package
+
+After that go to docker directory and run next command:
+
+-  sudo docker-compose up --build
+
+After running that command docker will retrieve all necessary containers.
+    
+
 
 ## Eureka-service
 
@@ -157,7 +184,6 @@ There is also need to have AWS credentials configured on your PC.
         
 ## Zuul-service
 Zuul is an edge service that proxies requests to multiple backing services.     
-
 
         
     

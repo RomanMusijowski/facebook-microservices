@@ -16,7 +16,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <java.version>12</java.version>
+        <java.version>13</java.version>
     </properties>
 
     <modules>
@@ -110,10 +110,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

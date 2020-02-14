@@ -14,7 +14,7 @@
     <description>eureka-server</description>
 
     <properties>
-        <java.version>12</java.version>
+        <java.version>13</java.version>
         <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
     </properties>
 
