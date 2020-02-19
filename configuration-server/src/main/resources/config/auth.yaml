@@ -1,8 +1,7 @@
 spring:
-  profile: localhost
   datasource:
     driverClassName: org.postgresql.Driver
-    url: "jdbc:postgresql://localhost:5432/facebook"
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:6551/facebook}
     username: "postgres"
     password: "secret"
     dbcp2:
@@ -24,7 +23,7 @@ spring:
           use_jdbc_metadata_defaults: false
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
   rabbitmq:
-    host: localhost
+    host: ${SPRING_RABBITMQ_HOST:localhost}
     port: 5672
     username: guest
     password: guest
@@ -44,52 +43,3 @@ logging:
       hibernate: ERROR
     com:
       mic: DEBUG
-
----
-spring:
-  profiles: docker
-  datasource:
-    driverClassName: org.postgresql.Driver
-    url: "jdbc:postgresql://auth-db:5432/facebook"
-    username: "postgres"
-    password: "secret"
-    dbcp2:
-      test-on-borrow: true
-      test-while-idle: true
-      time-between-eviction-runs-millis: 60000
-      min-evictable-idle-time-millis: 30000
-      validation-query: SELECT 1
-    tomcat:
-      max-active: 15
-      max-idle: 10
-      max-wait: 8000
-    jpa:
-      hibernate:
-        ddl-auto: update
-      properties:
-        hibernate:
-          temp:
-            use_jdbc_metadata_defaults: false
-      database-platform: org.hibernate.dialect.PostgreSQL9Dialect
-    rabbitmq:
-      host: rabbitmq
-      port: 5672
-      username: guest
-      password: guest
-    mail:
-      host: smtp.gmail.com
-      port: 587
-  app:
-    jwtSecret: JWTSuperSecretKey
-    jwtExpirationInMs: 604800000
-    queueName: mail-queue
-  logging:
-    config: classpath:log4j2.xml
-    level:
-      org:
-        springframework:
-          web: INFO
-        hibernate: ERROR
-      com:
-        mic: DEBUG
-
