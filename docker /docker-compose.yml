@@ -86,7 +86,7 @@ services:
     links:
       - eureka-server
       - configuration-server
-      - auth-db
+      - post-db
       - post-redis
     depends_on:
       - eureka-server
@@ -104,6 +104,21 @@ services:
     restart: on-failure
     ports:
       - 6379:6379
+    networks:
+      - emp-network
+
+  post-db:
+    image: postgres
+    container_name: post-db
+    restart: on-failure
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=facebook
+    ports:
+      - 6552:5432
+    volumes:
+      - facebook:/var/lib/post-db
     networks:
       - emp-network
 
