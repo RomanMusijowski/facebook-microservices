@@ -33,20 +33,23 @@ services:
     container_name: auth-service
     image: auth-service:latest
     environment:
-      SPRING_PROFILES_ACTIVE: docker
       SPRING_CLOUD_CONFIG_URI: http://configuration-server:9999
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://auth-db:5432/facebook
+      SPRING_RABBITMQ_HOST: rabbitmq
     ports:
       - 5000:5000
     restart: on-failure
     links:
-      - eureka-server:eureka-server
-      - configuration-server:configuration-server
-      - auth-db:auth-db
+      - eureka-server
+      - configuration-server
+      - auth-db
+      - rabbitmq
     depends_on:
       - eureka-server
       - configuration-server
       - auth-db
+      - rabbitmq
     networks:
       - emp-network
     logging:
@@ -62,11 +65,26 @@ services:
       - POSTGRES_PASSWORD=secret
       - POSTGRES_DB=facebook
     ports:
-      - 5432:5432
+      - 6551:5432
     volumes:
       - facebook:/var/lib/auth-db
     networks:
       - emp-network
+
+#  post-db:
+#    image: postgres
+#    container_name: post-db
+#    restart: on-failure
+#    environment:
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=secret
+#      - POSTGRES_DB=facebook
+#    ports:
+#      - 6552:5432
+#    volumes:
+#      - facebook:/var/lib/post-db
+#    networks:
+#      - emp-network
 
 
   rabbitmq:
@@ -89,15 +107,15 @@ services:
     image: mail-service:latest
     restart: on-failure
     environment:
-      SPRING_PROFILES_ACTIVE: docker
       SPRING_CLOUD_CONFIG_URI: http://configuration-server:9999
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      SPRING_RABBITMQ_HOST: rabbitmq
     ports:
       - 5002:5002
     links:
-      - eureka-server:eureka-server
-      - configuration-server:configuration-server
-      - rabbitmq:rabbitmq
+      - eureka-server
+      - configuration-server
+      - rabbitmq
     depends_on:
       - eureka-server
       - configuration-server
@@ -118,8 +136,8 @@ services:
     ports:
       - 8080:8080
     links:
-      - eureka-server:eureka-server
-      - configuration-server:configuration-server
+      - eureka-server
+      - configuration-server
     depends_on:
       - eureka-server
       - configuration-server

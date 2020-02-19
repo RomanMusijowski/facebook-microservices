@@ -1,38 +1,6 @@
 spring:
-  profile: localhost
-  mail:
-    host: smtp.gmail.com
-    port: 587
-app:
-  jwtSecret: JWTSuperSecretKey
-  jwtExpirationInMs: 604800000
-  queueName: mail-queue
-  mail:
-    email: //add
-    username: //add
-    password: //add
-    smtp:
-      host: smtp.gmail.com
-      port: 587
-      auth: true
-      starttls:
-        enable: true
-logging:
-  config: classpath:log4j2.xml
-  level:
-    org:
-      springframework:
-        web: INFO
-      hibernate: ERROR
-    com:
-      mic: DEBUG
-
----
-
-spring:
-  profile: docker
   rabbitmq:
-    host: rabbitmq
+    host: ${SPRING_RABBITMQ_HOST:localhost}
     port: 5672
     username: guest
     password: guest
@@ -62,6 +30,3 @@ logging:
       hibernate: ERROR
     com:
       mic: DEBUG
-
-
-
