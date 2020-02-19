@@ -1,7 +1,7 @@
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: "jdbc:postgresql://192.168.99.100:6552/facebook"
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:6552/facebook}
     username: "postgres"
     password: "secret"
     dbcp2:
@@ -25,7 +25,7 @@ spring:
   cache:
     type: redis
   redis:
-    host: 127.0.0.1
+    host: ${SPRING_REDIS_HOST:localhost}
     port: 6379
     time-to-live: 3600
 feign:
