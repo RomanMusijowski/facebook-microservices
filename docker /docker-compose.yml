@@ -71,20 +71,41 @@ services:
     networks:
       - emp-network
 
-#  post-db:
-#    image: postgres
-#    container_name: post-db
-#    restart: on-failure
-#    environment:
-#      - POSTGRES_USER=postgres
-#      - POSTGRES_PASSWORD=secret
-#      - POSTGRES_DB=facebook
-#    ports:
-#      - 6552:5432
-#    volumes:
-#      - facebook:/var/lib/post-db
-#    networks:
-#      - emp-network
+  post-service:
+    build: ../post
+    container_name: post-service
+    image: post-service:latest
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://configuration-server:9999
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:postgresql://post-db:5432/facebook
+      SPRING_REDIS_HOST: post-redis
+    ports:
+      - 5007:5007
+    restart: on-failure
+    links:
+      - eureka-server
+      - configuration-server
+      - auth-db
+      - post-redis
+    depends_on:
+      - eureka-server
+      - configuration-server
+      - post-db
+      - post-redis
+    networks:
+      - emp-network
+    logging:
+      driver: json-file
+
+  post-redis:
+    image: redis
+    container_name: post-redis
+    restart: on-failure
+    ports:
+      - 6379:6379
+    networks:
+      - emp-network
 
 
   rabbitmq:
