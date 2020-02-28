@@ -28,6 +28,7 @@
         <module>mail-service</module>
         <module>event-service</module>
         <module>s3client</module>
+        <module>market-service</module>
     </modules>
 
     <dependencies>
