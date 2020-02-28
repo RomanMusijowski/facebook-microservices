@@ -1,0 +1,8 @@
+spring:
+  datasource:
+
+feign:
+  client:
+    config:
+      default:
+        requestInterceptors: com.mic.marketservice.client.interceptor.AuthorizationRequestInterceptor
